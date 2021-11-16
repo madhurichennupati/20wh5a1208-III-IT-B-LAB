@@ -1,0 +1,35 @@
+Given an array of integers arr and an integer target.
+
+You have to find two non-overlapping sub-arrays of arr each with a sum equal target. There can be multiple answers so you have to find an answer where the sum of the lengths of the two sub-arrays is minimum.
+
+Return the minimum sum of the lengths of the two required sub-arrays, or return -1 if you cannot find such two sub-arrays.
+
+SOLUTION IN C++
+
+class Solution {
+public:
+    int dp[100005][3];  
+    unordered_map<int,int> sm;  
+    
+    int minSumOfLengths(vector<int>& arr, int tar) {
+        int n = arr.size(), cursum = 0;
+        sm[0] = 0;
+        memset(dp, 127, sizeof(dp));  
+        for (int i = 0; i < 100005; i++) dp[i][0] = 0;  
+        
+        for (int i = 1; i <= n; i++) {
+            int d = -1; 
+            cursum += arr[i-1];
+            sm[cursum] = i;
+            if (sm.count(cursum - tar)) d = sm[cursum-tar];
+            
+            for (int j = 1; j <= 2; j++) {  
+                dp[i][j] = min(dp[i][j], dp[i-1][j]); 
+                if (d != -1) dp[i][j] = min(dp[i][j],dp[d][j-1] + i - d);
+            }
+        }
+        if (dp[n][2] > 1e9) return -1;    
+        return dp[n][2];   
+    }
+};
+
