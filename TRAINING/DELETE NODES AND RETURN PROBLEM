@@ -1,0 +1,24 @@
+Given the root of a binary tree, each node in the tree has a distinct value.
+
+After deleting all nodes with a value in to_delete, we are left with a forest (a disjoint union of trees).
+
+Return the roots of the trees in the remaining forest. You may return the result in any order.
+
+ 
+SOLUTION IN PYTHON:
+
+class Solution(object):
+   def delNodes(self, root, to_delete):
+      to_delete = set(to_delete)
+      self.res = []
+      self.solve(root,to_delete,True)
+      return self.res
+   def solve(self,node,to_delete,is_root):
+      if not node:
+         return None
+      flag = node.val in to_delete
+      if not flag and is_root:
+         self.res.append(node)
+      node.left = self.solve(node.left,to_delete,flag)
+      node.right = self.solve(node.right,to_delete,flag)
+      return None if flag else node
